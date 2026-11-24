@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Local Sourcing &amp; Stores – ConsciousCart{% endblock %}
+
+{% block content %}
+  <h1 class="fw-bold mb-1">Local Markets &amp; Sourcing</h1>
+  <p class="text-muted mb-4">Find nearby organic markets, co-ops, and responsible grocery stores.</p>
+
+  <div class="card shadow-sm p-4">
+    {% if locations is defined and locations %}
+      <div class="row g-3">
+        {% for loc in locations %}
+          <div class="col-md-6">
+            <div class="border rounded p-3 h-100">
+              <h5 class="fw-bold mb-1">{{ loc.name }}</h5>
+              <p class="text-muted small mb-1">{{ loc.address or loc.area or '' }}</p>
+              <span class="badge bg-success-subtle text-success">{{ loc.category or 'Local Store' }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">No store locations configured yet. You can still search products like <strong>soap</strong> and <strong>rice</strong> in the <a href="/planner">Planner</a>.</p>
+    {% endif %}
+  </div>
+{% endblock %}

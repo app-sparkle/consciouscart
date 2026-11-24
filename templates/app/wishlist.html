@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Wishlist – ConsciousCart{% endblock %}
+
+{% block content %}
+  <h1 class="fw-bold mb-1">Mindful Wishlist</h1>
+  <p class="text-muted mb-4">Items marked as "Just browsing" during Need Verification so you can pause before buying.</p>
+
+  <div class="card shadow-sm p-4">
+    {% if wishlist_items is defined and wishlist_items %}
+      <div class="list-group list-group-flush">
+        {% for item in wishlist_items %}
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-semibold">{{ item.name or item.product_name or 'Saved Item' }}</div>
+              <small class="text-muted">{{ item.reason_note or 'Paused for conscious review' }}</small>
+            </div>
+            <a href="/planner" class="btn btn-outline-success btn-sm">Review in Planner</a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">No wishlisted items yet. Choose <strong>Just Browsing (Wishlist)</strong> in the <a href="/planner">Planner</a> to save items for later reflection.</p>
+    {% endif %}
+  </div>
+{% endblock %}

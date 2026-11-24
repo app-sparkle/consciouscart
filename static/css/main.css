@@ -1,0 +1,102 @@
+:root {
+  --bg-page: #faf8f3;
+  --bg-surface: #ffffff;
+  --bg-cream: #f2efe6;
+  --text-primary: #1b2a22;
+  --text-muted: #52635a;
+  --green-primary: #245c3e;
+  --green-dark: #163d29;
+  --green-soft: #e3efe7;
+  --border-subtle: #dfe5dc;
+  --shadow-card: 0 6px 20px rgba(22, 61, 41, 0.06);
+  --radius-card: 16px;
+}
+
+[data-theme="dark"] {
+  --bg-page: #111915;
+  --bg-surface: #19241e;
+  --bg-cream: #202e26;
+  --text-primary: #eef3ef;
+  --text-muted: #a8b8ae;
+  --green-primary: #4ca977;
+  --green-dark: #2c7a52;
+  --green-soft: #1f3529;
+  --border-subtle: #2b3b32;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sidebar a, .sidebar button.nav-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.95rem;
+  border-radius: 12px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar a.active, .sidebar a:hover {
+  background: var(--green-soft);
+  color: var(--green-primary);
+}
+
+.card-cc {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem;
+}
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.badge-tier {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--green-soft);
+  color: var(--green-primary);
+}
+
+@media (max-width: 1100px) {
+  .tier-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .tier-grid { grid-template-columns: 1fr; }
+}

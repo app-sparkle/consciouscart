@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Settings – ConsciousCart{% endblock %}
+
+{% block content %}
+  <h1 class="fw-bold mb-1">Account &amp; Planner Preferences</h1>
+  <p class="text-muted mb-4">Manage your ConsciousCart profile and default budget reserve settings.</p>
+
+  <div class="card shadow-sm p-4" style="max-width: 600px;">
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Safety Reserve Percentage</label>
+        <input type="number" class="form-control" name="reserve_pct" value="20" min="0" max="100" readonly>
+        <div class="form-text">Default safety reserve is set to 20% of your items subtotal.</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Default Search Keyword</label>
+        <input type="text" class="form-control" name="default_keyword" value="soap">
+      </div>
+      <button type="submit" class="btn btn-success">Save Preferences</button>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Shopping List – ConsciousCart{% endblock %}
+
+{% block content %}
+  {% set current_list = active_list if active_list is defined and active_list else (shopping_lists[0] if shopping_lists is defined and shopping_lists else None) %}
+  {% set sub = (current_list.planned_subtotal if current_list and current_list.planned_subtotal is not none else 0) | float %}
+  {% set reserve = (current_list.safety_reserve if current_list and current_list.safety_reserve is not none else (sub * 0.20)) | float %}
+  {% set total_budget = (current_list.recommended_budget if current_list and current_list.recommended_budget is not none else (sub + reserve)) | float %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="fw-bold mb-1">Active Shopping List</h1>
+      <p class="text-muted mb-0">{{ current_list.title if current_list else 'My Grocery Plan' }}</p>
+    </div>
+    <a href="/planner" class="btn btn-success">+ Add More Items</a>
+  </div>
+
+  <div id="list-banner" class="alert d-none"></div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm p-4">
+        <h5 class="fw-bold mb-3">List Items</h5>
+        {% if list_items is defined and list_items %}
+          <ul class="list-group list-group-flush" id="shopping-list-ul">
+            {% for li in list_items %}
+              <li class="list-group-item px-0 d-flex justify-content-between align-items-center" id="list-row-{{ li.id }}">
+                <div>
+                  <div class="fw-semibold">{{ li.product_name }}</div>
+                  <small class="text-muted">
+                    Qty: {{ li.quantity }} × ₹{{ "%.2f"|format(li.unit_price_snapshot|float) }}
+                    · <strong>₹{{ "%.2f"|format((li.quantity * li.unit_price_snapshot)|float) }}</strong>
+                  </small>
+                </div>
+                <button type="button" class="btn btn-outline-danger btn-sm" data-item-id="{{ li.id }}">Delete</button>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted mb-0">Your shopping list is empty. Visit <a href="/planner">Smart Grocery Planner</a> to add items.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm p-4">
+        <h5 class="fw-bold mb-3">Budget Summary (20% Reserve)</h5>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Items Subtotal</span>
+          <strong id="sl-subtotal">₹{{ "%.2f"|format(sub) }}</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">20% Safety Reserve</span>
+          <strong id="sl-reserve">₹{{ "%.2f"|format(reserve) }}</strong>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="fw-bold">Recommended Budget</span>
+          <strong class="text-success fs-5" id="sl-total">₹{{ "%.2f"|format(total_budget) }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById("shopping-list-ul")?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-item-id]");
+    if (button) removeItem(button.dataset.itemId);
+  });
+
+  async function removeItem(itemId) {
+    const banner = document.getElementById("list-banner");
+    const res = await fetch(`/api/list/item/${itemId}/delete`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+    const data = await res.json();
+    banner.classList.remove("d-none", "alert-success", "alert-danger");
+    if (!res.ok) {
+      banner.classList.add("alert-danger");
+      banner.textContent = data.message || "Could not remove item.";
+      return;
+    }
+    const row = document.getElementById(`list-row-${itemId}`);
+    if (row) row.remove();
+    banner.classList.add("alert-success");
+    banner.textContent = data.message || "Item removed.";
+    if (data.budget) {
+      document.getElementById("sl-subtotal").textContent = `₹${Number(data.budget.subtotal).toFixed(2)}`;
+      document.getElementById("sl-reserve").textContent = `₹${Number(data.budget.safety_reserve).toFixed(2)}`;
+      document.getElementById("sl-total").textContent = `₹${Number(data.budget.recommended_budget).toFixed(2)}`;
+    }
+  }
+</script>
+{% endblock %}

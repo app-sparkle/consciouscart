@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Shopping History – ConsciousCart{% endblock %}
+
+{% block content %}
+  <h1 class="fw-bold mb-1">Shopping &amp; List History</h1>
+  <p class="text-muted mb-4">Track past grocery plans, subtotals, and 20% safety reserve allocations.</p>
+
+  <div class="card shadow-sm p-4">
+    {% if history_lists is defined and history_lists %}
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Plan Title</th>
+              <th>Status</th>
+              <th>Subtotal</th>
+              <th>20% Reserve</th>
+              <th>Recommended Budget</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for lst in history_lists %}
+              <tr>
+                <td class="fw-semibold">{{ lst.title }}</td>
+                <td><span class="badge bg-secondary-subtle text-dark">{{ lst.status }}</span></td>
+                <td>₹{{ "%.2f"|format((lst.planned_subtotal or 0)|float) }}</td>
+                <td>₹{{ "%.2f"|format((lst.safety_reserve or 0)|float) }}</td>
+                <td class="fw-bold text-success">₹{{ "%.2f"|format((lst.recommended_budget or 0)|float) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">No historical shopping plans recorded yet. Start by adding items in the <a href="/planner">Smart Grocery Planner</a>.</p>
+    {% endif %}
+  </div>
+{% endblock %}
